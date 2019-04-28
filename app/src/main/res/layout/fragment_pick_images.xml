@@ -18,4 +18,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/btn_open_camera"/>
 
+    <ImageView
+        android:id="@+id/iv_watermark"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_open_camera"
+        android:background="@android:color/holo_blue_light"/>
+
+    <Button
+        android:id="@+id/btn_pick_water_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/btn_open_camera"
+        android:text="@string/pick_watermark" />
+
 </android.support.constraint.ConstraintLayout>
