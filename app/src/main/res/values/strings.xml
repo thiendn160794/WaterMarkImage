@@ -6,4 +6,5 @@
     <string name="error">Error</string>
     <string name="watermark_has_not_been_initialize">Watermark chưa được chọn!</string>
     <string name="ok">OK</string>
+    <string name="save">Save</string>
 </resources>

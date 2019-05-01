@@ -21,6 +21,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -164,19 +168,31 @@ public class SelectImageFragment extends Fragment {
             if (resultData != null) {
                 // this is the image selected by the user
                 Uri imageUri = resultData.getData();
-                try {
-                    mProcessBitmap.onBitmapSelected(Utils.convertUriToBitmap(imageUri, getContext()));
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (imageUri != null) {
+                    try {
+                        Date dNow = new Date();
+                        SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
+                        String fileName = ft.format(dNow) + ".png";
+                        HashMap<String, Bitmap> maps = new HashMap<>();
+                        maps.put(fileName, Utils.convertUriToBitmap(imageUri, getContext()));
+                        mProcessBitmap.onBitmapSelected(maps);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } else if (requestCode == OPEN_CAMERA_CODE && resultCode == RESULT_OK){
             if (resultData != null){
+                Date dNow = new Date();
+                SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
+                String fileName = ft.format(dNow) + ".png";
+                HashMap<String, Bitmap> maps = new HashMap<>();
                 Bitmap image = (Bitmap) resultData.getExtras().get("data");
-                mProcessBitmap.onBitmapSelected(image);
+                maps.put(fileName, image);
+                mProcessBitmap.onBitmapSelected(maps);
             }
         } else if (requestCode == OPEN_WATER_MARK_CODE && resultCode == RESULT_OK) {
-            if (resultData != null) {
+            if (resultData != null && resultData.getData() != null) {
                 Uri waterMarkUri = resultData.getData();
                 ivWaterMark.setImageURI(waterMarkUri);
                 SharePref.saveWaterMarkUrl(waterMarkUri.toString(), getContext().getApplicationContext());

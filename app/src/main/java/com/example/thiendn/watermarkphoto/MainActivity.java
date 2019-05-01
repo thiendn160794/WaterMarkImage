@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 
@@ -31,10 +32,14 @@ public class MainActivity extends AppCompatActivity implements IProcessBitmap{
     }
 
     @Override
-    public void onBitmapSelected(Bitmap bitmap) {
+    public void onBitmapSelected(HashMap<String, Bitmap> bitmap) {
         try {
             Bitmap bitmap2 = Utils.convertUriToBitmap(Uri.parse(SharePref.getWaterMarkUrl(this)), this);
-            PreviewFragment previewFragment = PreviewFragment.newInstance(combineBitmaps(bitmap, bitmap2));
+            for (String key : bitmap.keySet()) {
+                Bitmap value = bitmap.get(key);
+                bitmap.put(key, combineBitmaps(value, bitmap2));
+            }
+            PreviewFragment previewFragment = PreviewFragment.newInstance(bitmap);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fr_main, previewFragment, PreviewFragment.TAG)
@@ -45,16 +50,29 @@ public class MainActivity extends AppCompatActivity implements IProcessBitmap{
         }
     }
 
-    @Override
-    public void onBitmapsSelected(ArrayList<Bitmap> bitmaps) {
-
-    }
-
     private Bitmap combineBitmaps(Bitmap firstBitmap, Bitmap secondBitmap) {
+        Bitmap bitmapWaterMark = getResizedBitmap(secondBitmap, firstBitmap.getWidth(), firstBitmap.getHeight());
         Bitmap bmOverlay = Bitmap.createBitmap(firstBitmap.getWidth(), firstBitmap.getHeight(), firstBitmap.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(firstBitmap, new Matrix(), null);
-        canvas.drawBitmap(secondBitmap, 0, 0, null);
+        canvas.drawBitmap(bitmapWaterMark, 0, 0, null);
         return bmOverlay;
+    }
+
+    private Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }
