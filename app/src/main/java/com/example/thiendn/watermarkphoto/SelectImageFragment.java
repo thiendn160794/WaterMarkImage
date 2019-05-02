@@ -3,7 +3,6 @@ package com.example.thiendn.watermarkphoto;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -88,12 +86,7 @@ public class SelectImageFragment extends Fragment {
             new AlertDialog.Builder(getContext())
                     .setTitle(R.string.error)
                     .setMessage(R.string.watermark_has_not_been_initialize)
-                    .setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
+                    .setNegativeButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss())
                     .create()
                     .show();
         }
